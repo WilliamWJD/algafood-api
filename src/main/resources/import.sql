@@ -1,0 +1,11 @@
+insert into cozinha (id, nome) values (1, 'Tailandesa');
+insert into cozinha (id, nome) values (2, 'Indiana');
+insert into cozinha (id, nome) values (3, 'Brasileira');
+insert into restaurante (nome, taxa_frete, cozinha_id) values ('Will Sabores', 10.0, 1);
+insert into restaurante (nome, taxa_frete, cozinha_id) values ('GunGun Lanches', 5.0, 3);
+insert into restaurante (nome, taxa_frete, cozinha_id) values ('Karol Dogs', 5.0, 3);
+insert into forma_pagamento (descricao) values ('Cartão de Crédito');
+insert into forma_pagamento (descricao) values ('Cartão de Débito');
+insert into permissao (nome, descricao) values ('Administrador','Acesso total');
+insert into estado (id, nome) values (1, 'São Paulo');
+insert into cidade (nome, estado_id) values ('Sumaré', 1);
