@@ -29,8 +29,8 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
 	
 	@Override
 	@Transactional
-	public Cozinha salvar(Cozinha cozinha) {
-		return manager.merge(cozinha);
+	public void salvar(Cozinha cozinha) {
+		manager.merge(cozinha);
 	}
 	
 	@Override
