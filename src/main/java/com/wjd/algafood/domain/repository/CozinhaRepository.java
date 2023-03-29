@@ -7,6 +7,6 @@ import com.wjd.algafood.domain.model.Cozinha;
 public interface CozinhaRepository {
 	List<Cozinha> listar();
 	Cozinha buscar(Long id);
-	void salvar(Cozinha cozinha);
+	Cozinha salvar(Cozinha cozinha);
 	void remover(Cozinha cozinha);
 }
