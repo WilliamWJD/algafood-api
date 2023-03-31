@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wjd.algafood.api.model.CozinhasXmlWrapper;
+import com.wjd.algafood.domain.exception.EntidadeEmUsoException;
+import com.wjd.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.wjd.algafood.domain.model.Cozinha;
 import com.wjd.algafood.domain.repository.CozinhaRepository;
+import com.wjd.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping(value = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +30,9 @@ public class CozinhaController {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
+
+	@Autowired
+	private CadastroCozinhaService cadastroCozinhaService;
 
 	@GetMapping
 	public List<Cozinha> listar() {
@@ -52,7 +57,7 @@ public class CozinhaController {
 
 	@PostMapping
 	public void adicionar(@RequestBody Cozinha cozinha) {
-		cozinhaRepository.salvar(cozinha);
+		cadastroCozinhaService.salvar(cozinha);
 	}
 
 	@PutMapping("/{cozinhaId}")
@@ -71,16 +76,11 @@ public class CozinhaController {
 	@DeleteMapping("/{cozinhaId}")
 	public ResponseEntity<Void> deletar(@PathVariable("cozinhaId") Long id) {
 		try {
-			Cozinha cozinhaAtual = cozinhaRepository.buscar(id);
-
-			if (Objects.isNull(cozinhaAtual)) {
-				return ResponseEntity.notFound().build();
-			}
-
-			cozinhaRepository.remover(cozinhaAtual);
-
+			cadastroCozinhaService.excluir(id);
 			return ResponseEntity.noContent().build();
-		} catch (DataIntegrityViolationException e) {
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (EntidadeEmUsoException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
