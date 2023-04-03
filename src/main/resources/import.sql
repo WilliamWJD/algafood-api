@@ -7,5 +7,5 @@ insert into restaurante (nome, taxa_frete, cozinha_id) values ('Karol Dogs', 5.0
 insert into forma_pagamento (descricao) values ('Cartão de Crédito');
 insert into forma_pagamento (descricao) values ('Cartão de Débito');
 insert into permissao (nome, descricao) values ('Administrador','Acesso total');
-insert into estado (id, nome) values (1, 'São Paulo');
+insert into estado (nome) values ('São Paulo');
 insert into cidade (nome, estado_id) values ('Sumaré', 1);

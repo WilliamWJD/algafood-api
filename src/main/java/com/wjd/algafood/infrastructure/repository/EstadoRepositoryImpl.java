@@ -39,5 +39,4 @@ public class EstadoRepositoryImpl implements EstadoRepository {
 		estado = buscar(estado.getId());
 		manager.remove(estado);
 	}
-
 }
