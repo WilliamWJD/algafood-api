@@ -1,11 +1,13 @@
 package com.wjd.algafood.api.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -52,6 +54,15 @@ public class RestauranteController {
 			@RequestBody final Restaurante restaurante) {
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.atualizar(restaurante, restauranteId));
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping("/{restauranteId}")
+	public ResponseEntity<?> atualizaParcial(@PathVariable final Long restauranteId, @RequestBody Map<String, Object> campos){
+		try {
+			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.atualizaParcial(campos, restauranteId));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

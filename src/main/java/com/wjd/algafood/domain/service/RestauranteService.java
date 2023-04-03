@@ -1,12 +1,16 @@
 package com.wjd.algafood.domain.service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wjd.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.wjd.algafood.domain.model.Cozinha;
 import com.wjd.algafood.domain.model.Restaurante;
@@ -56,5 +60,27 @@ public class RestauranteService {
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
 		
 		return salvar(restauranteAtual);
+	}
+	
+	public Restaurante atualizaParcial(Map<String, Object> campos, Long restauranteID) {
+		Restaurante restauranteAtual = buscar(restauranteID);
+
+		merge(campos, restauranteAtual);
+		
+		return salvar(restauranteAtual);
+	}
+
+	private void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
+		
+		camposOrigem.forEach((nome, valor) -> {
+			Field field = ReflectionUtils.findField(Restaurante.class, nome);
+			field.setAccessible(true);
+			
+			Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+			
+			ReflectionUtils.setField(field, restauranteDestino, novoValor);
+		});
 	}
 }
