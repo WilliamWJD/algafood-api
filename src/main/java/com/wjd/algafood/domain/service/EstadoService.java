@@ -1,7 +1,6 @@
 package com.wjd.algafood.domain.service;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,28 +17,23 @@ public class EstadoService {
 	private EstadoRepository estadoRepository;
 
 	public List<Estado> listar() {
-		return estadoRepository.listar();
+		return estadoRepository.findAll();
 	}
 
 	public Estado buscar(final Long estadoId) {
-		Estado estado = estadoRepository.buscar(estadoId);
-
-		if (Objects.isNull(estado)) {
-			throw new EntidadeNaoEncontradaException(String.format("Estado não encontrado com o id %d", estadoId));
-		}
-
-		return estado;
+		return estadoRepository.findById(estadoId).orElseThrow(
+				() -> new EntidadeNaoEncontradaException(String.format("Estado não encontrado com o id %d", estadoId)));
 	}
 
 	public Estado salvar(final Estado estado) {
-		return estadoRepository.salvar(estado);
+		return estadoRepository.save(estado);
 	}
-	
+
 	public Estado atualizar(final Estado estado, final Long estadoId) {
 		Estado estadoAtual = buscar(estadoId);
-		
+
 		BeanUtils.copyProperties(estado, estadoAtual, "id");
-		
+
 		return salvar(estadoAtual);
 	}
 }

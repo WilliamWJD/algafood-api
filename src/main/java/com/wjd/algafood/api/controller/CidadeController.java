@@ -23,17 +23,17 @@ import com.wjd.algafood.domain.service.CidadeService;
 public class CidadeController {
 
 	@Autowired
-	private CidadeService CidadeService;
+	private CidadeService cidadeService;
 
 	@GetMapping
 	public ResponseEntity<List<Cidade>> listar() {
-		return ResponseEntity.ok(CidadeService.listar());
+		return ResponseEntity.ok(cidadeService.listar());
 	}
 
 	@GetMapping("/{cidadeId}")
 	public ResponseEntity<?> buscar(@PathVariable(name = "cidadeId") final Long cidadeId) {
 		try {
-			return ResponseEntity.ok(CidadeService.buscar(cidadeId));
+			return ResponseEntity.ok(cidadeService.buscar(cidadeId));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -42,7 +42,7 @@ public class CidadeController {
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody final Cidade Cidade) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(CidadeService.salvar(Cidade));
+			return ResponseEntity.status(HttpStatus.CREATED).body(cidadeService.salvar(Cidade));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -51,7 +51,7 @@ public class CidadeController {
 	@PutMapping("/{cidadeId}")
 	public ResponseEntity<?>atualizar(@RequestBody final Cidade Cidade, @PathVariable(name = "cidadeId") final Long cidadeId){
 		try {
-			return ResponseEntity.ok(CidadeService.atualizar(Cidade, cidadeId));
+			return ResponseEntity.ok(cidadeService.atualizar(Cidade, cidadeId));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
