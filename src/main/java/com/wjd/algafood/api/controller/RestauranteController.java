@@ -1,9 +1,11 @@
 package com.wjd.algafood.api.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wjd.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.wjd.algafood.domain.model.Restaurante;
+import com.wjd.algafood.domain.repository.RestauranteRepository;
 import com.wjd.algafood.domain.service.RestauranteService;
 
 @RestController
@@ -25,6 +28,9 @@ public class RestauranteController {
 
 	@Autowired
 	private RestauranteService restauranteService;
+
+	@Autowired
+	private RestauranteRepository restauranteRepository;
 
 	@GetMapping
 	public List<Restaurante> listar() {
@@ -48,23 +54,37 @@ public class RestauranteController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+
 	@PutMapping("/{restauranteId}")
 	public ResponseEntity<?> atualizar(@PathVariable(name = "restauranteId") final Long restauranteId,
 			@RequestBody final Restaurante restaurante) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.atualizar(restaurante, restauranteId));
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(restauranteService.atualizar(restaurante, restauranteId));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizaParcial(@PathVariable final Long restauranteId, @RequestBody Map<String, Object> campos){
+	public ResponseEntity<?> atualizaParcial(@PathVariable final Long restauranteId,
+			@RequestBody Map<String, Object> campos) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.atualizaParcial(campos, restauranteId));
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(restauranteService.atualizaParcial(campos, restauranteId));
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+
+	@GetMapping("/porNome")
+	public List<Restaurante> buscarPorNome(@Param("nome") String nome) {
+		return restauranteRepository.consultarPorNome(nome);
+	}
+
+	@GetMapping("/por-nome-e-frete")
+	public List<Restaurante> buscarPorNomeFrete(@Param("nome") String nome,
+			@Param("taxaFreteInicial") BigDecimal taxaFreteInicial, @Param("taxaFreteFinal") BigDecimal taxaFreteFinal) {
+		return restauranteRepository.find(nome, taxaFreteInicial, taxaFreteFinal);
 	}
 }
